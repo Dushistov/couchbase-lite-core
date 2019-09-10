@@ -6,6 +6,7 @@ _c4log_getLevel
 _c4log_setLevel
 _c4slog
 _c4log_writeToCallback
+_c4log_setRustCallback
 _c4log_writeToBinaryFile
 _c4log_callbackLevel
 _c4log_setCallbackLevel
