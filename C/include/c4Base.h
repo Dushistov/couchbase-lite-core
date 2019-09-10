@@ -201,7 +201,7 @@ typedef struct c4LogDomain *C4LogDomain;
 
 /** A logging callback that the application can register. */
 typedef void (*C4LogCallback)(C4LogDomain, C4LogLevel, const char *fmt C4NONNULL, va_list args);
-
+typedef void (*C4LogCallbackR)(C4LogDomain, C4LogLevel, const char *msg C4NONNULL);
 
 CBL_CORE_API extern const C4LogDomain
     kC4DefaultLog,                  ///< The default log domain
@@ -228,6 +228,7 @@ CBL_CORE_API extern const C4LogDomain
             so the `fmt` parameter will be the actual string to log, and the `args` parameter
             will be NULL. */
 void c4log_writeToCallback(C4LogLevel level, C4LogCallback callback, bool preformatted) C4API;
+void c4log_setRustCallback(C4LogLevel level, C4LogCallbackR callback) C4API;
 
 /** Causes log messages to be written to a file, overwriting any previous contents.
     The data is written in an efficient and compact binary form that can be read using the
