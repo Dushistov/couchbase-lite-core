@@ -21,6 +21,11 @@
 
 /** SocketFactory that uses the civetweb HTTP/WebSocket library.
     Used by LiteCore unit tests and the `cblite` command-line tool. */
-extern const C4SocketFactory C4CivetWebSocketFactory;
+#ifdef __cplusplus
+extern "C"
+#else
+extern
+#endif
+const C4SocketFactory C4CivetWebSocketFactory;
 
 void RegisterC4CivetWebSocketFactory();

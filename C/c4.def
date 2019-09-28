@@ -368,3 +368,5 @@ mbedtls_md_init
 mbedtls_md_free
 mbedtls_md_setup
 mbedtls_pkcs5_pbkdf2_hmac
+
+C4CivetWebSocketFactory

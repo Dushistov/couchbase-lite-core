@@ -424,7 +424,7 @@ namespace litecore { namespace websocket {
 
 using namespace litecore::websocket;
 
-
+extern "C" {
 const C4SocketFactory C4CivetWebSocketFactory {
     kC4NoFraming,
     nullptr,
@@ -435,7 +435,7 @@ const C4SocketFactory C4CivetWebSocketFactory {
     &sock_requestClose,
     &sock_dispose
 };
-
+}
 
 void RegisterC4CivetWebSocketFactory() {
     static std::once_flag once;
