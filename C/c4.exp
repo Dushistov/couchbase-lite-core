@@ -370,3 +370,5 @@ _FLValue_ToJSON5
 
 # Apple specific
 _FLEncoder_WriteNSObject
+
+_C4CivetWebSocketFactory

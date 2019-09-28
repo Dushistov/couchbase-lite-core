@@ -370,3 +370,4 @@ FLSharedKeys_Release
 
 FLValue_ToJSON5
 
+C4CivetWebSocketFactory
