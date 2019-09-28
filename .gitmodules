@@ -3,7 +3,7 @@
 	url = https://github.com/snej/sqlite3-unicodesn.git
 [submodule "vendor/fleece"]
 	path = vendor/fleece
-	url = https://github.com/Dushistov/fleece
+	url = https://github.com/couchbaselabs/fleece
 [submodule "vendor/SQLiteCpp"]
 	path = vendor/SQLiteCpp
 	url = https://github.com/couchbasedeps/SQLiteCpp.git
