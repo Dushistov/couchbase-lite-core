@@ -15,6 +15,7 @@
 		c4log_getDomain;
 		c4log_getDomainName;
 		c4log_warnOnErrors;
+		c4log_setRustCallback;
 
 		c4error_make;
 		c4error_getMessage;
@@ -366,6 +367,7 @@
 		FLSharedKeys_Release;
 
 		FLValue_ToJSON5;
+		C4CivetWebSocketFactory;
 	local:
 		*;
 };
