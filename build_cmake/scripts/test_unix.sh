@@ -1,4 +1,5 @@
 #!/bin/bash -e
+set -e
 
 if [ ! -f LiteCore/tests/CppTests ]; then
   echo "CppTests not found!"
