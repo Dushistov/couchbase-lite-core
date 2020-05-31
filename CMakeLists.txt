@@ -65,7 +65,7 @@ option(BUILD_ENTERPRISE "Set whether or not to build enterprise edition" OFF)
 option(LITECORE_DISABLE_ICU "Disables ICU linking" OFF)
 option(DISABLE_LTO_BUILD "Disable build with Link-time optimization" OFF)
 option(LITECORE_BUILD_TESTS "Builds C4Tests and CppTests" ON)
-option(SANITIZE_FOR_DEBUG_ENABLED "Enable -fsanitize for Debug Build" ON)
+option(MAINTAINER_MODE "The configuration pre-choosen by maintainers" ON)
 option(SQLITE_ENABLE_RTREE "Enable r-tree extension in sqlite3 module" OFF)
 
 add_definitions(
