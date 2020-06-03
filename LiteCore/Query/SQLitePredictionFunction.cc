@@ -129,6 +129,7 @@ namespace litecore {
             if (power != 2.0)
                 dist = pow(sqrt(dist), power);
         }
+        
         sqlite3_result_double(ctx, dist);
     }
 

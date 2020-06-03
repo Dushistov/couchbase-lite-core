@@ -959,15 +959,15 @@ TEST_CASE_METHOD(QueryTest, "Query Functions", "[Query]") {
 #ifdef COUCHBASE_ENTERPRISE
 TEST_CASE_METHOD(QueryTest, "Query Distance Metrics", "[Query]") {
     testExpressions( {
-        {"['euclidean_distance()', ['[]', 10, 10], ['[]', 13, 14]]",    "5"},
-        {"['euclidean_distance()', ['[]', 10, 10], ['[]', 13, 14], 2]", "25"},
-        {"['euclidean_distance()', ['[]', 1,2,3,4,5], ['[]', 1,2,3,4,5]]","0"},
-        {"['euclidean_distance()', ['[]'], ['[]']]",                    "0"},
+        {"['euclidean_distance()', ['[]', 10, 10], ['[]', 13, 14]]",    "5.0"},
+        {"['euclidean_distance()', ['[]', 10, 10], ['[]', 13, 14], 2]", "25.0"},
+        {"['euclidean_distance()', ['[]', 1,2,3,4,5], ['[]', 1,2,3,4,5]]","0.0"},
+        {"['euclidean_distance()', ['[]'], ['[]']]",                    "0.0"},
         {"['euclidean_distance()', 18, 'foo']",                         "null"},
         {"['euclidean_distance()', ['[]', 10, 10], ['[]', 13]]",        "null"},
 
-        {"['cosine_distance()', ['[]', 10, 0], ['[]', 0, 99]]",         "1"},
-        {"['cosine_distance()', ['[]', 1,2,3,4,5], ['[]', 1,2,3,4,5]]", "0"},
+        {"['cosine_distance()', ['[]', 10, 0], ['[]', 0, 99]]",         "1.0"},
+        {"['cosine_distance()', ['[]', 1,2,3,4,5], ['[]', 1,2,3,4,5]]", "0.0"},
         {"['cosine_distance()', ['[]'], ['[]']]",                       "null"},
         {"['cosine_distance()', 18, 'foo']",                            "null"},
         {"['cosine_distance()', ['[]', 10, 10], ['[]', 13]]",           "null"},
@@ -1700,4 +1700,22 @@ TEST_CASE_METHOD(QueryTest, "Query closes when db closes", "[Query]") {
 
     // Close & delete the database while the Query and QueryEnumerator still exist:
     deleteDatabase();
+}
+
+TEST_CASE_METHOD(QueryTest, "Query Math Precision", "[Query]") {
+    addNumberedDocs();
+    Retained<Query> query;
+    query = store->compileQuery(json5(
+        "{WHAT: ['.num', ['AS', ['/', 5.0, 15.0], 'd1'], ['AS', ['/', 5.5, 16.5], 'd2'], ['AS', ['/', 5, 15], 'd3']]}"));
+
+    CHECK(query->columnTitles() == (vector<string>{"num","d1", "d2", "d3"}));
+    Retained<QueryEnumerator> e(query->createEnumerator());
+
+    while (e->next()) {
+        auto cols = e->columns();
+        REQUIRE(cols.count() == 4);
+        REQUIRE(cols[2]->asDouble() == (double)5.5/16.5);
+        REQUIRE(cols[1]->asDouble() == (double)5/15);
+        REQUIRE(cols[3]->asDouble() == 5/15);
+    }
 }

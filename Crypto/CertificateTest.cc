@@ -113,6 +113,8 @@ TEST_CASE("Self-signed cert generation", "[Certs]") {
     cerr << "Raw data: " << cert->data() << '\n';
     cerr << "PEM data:\n" << string(cert->data(KeyFormat::PEM)) << '\n';
 
+    CHECK(cert->isSigned());
+    CHECK(cert->isSelfSigned());
     CHECK(cert->subjectName() == kSubjectName);
 
     time_t created, expires;
@@ -137,7 +139,7 @@ TEST_CASE("Self-signed cert with Subject Alternative Name", "[Certs]") {
     subjectParams.nsCertType = NSCertType(SSL_CLIENT | EMAIL);
     Cert::IssuerParameters issuerParams;
     issuerParams.validity_secs = 3600*24;
-    Retained<PrivateKey> key = PrivateKey::generateTemporaryRSA(2048);;
+    Retained<PrivateKey> key = PrivateKey::generateTemporaryRSA(2048);
     Retained<Cert> cert;
 
     SECTION("Self-signed") {
@@ -196,7 +198,11 @@ TEST_CASE("Persistent key and cert", "[Certs]") {
     Retained<CertSigningRequest> csr2 = new CertSigningRequest(data);
     CHECK(csr2->subjectName() == kSubjectName);
     CHECK(csr2->subjectPublicKey()->data(KeyFormat::Raw) == key->publicKey()->data(KeyFormat::Raw));
-
+    
+    // CBL-1036: Remove a left over cert that causes test failures on some machines.
+    Cert::deleteCert("Jane Doe");
+    CHECK(Cert::loadCert("Jane Doe") == nullptr);
+    
     // Delete the cert to cleanup:
     Cert::deleteCert("cert1");
     CHECK(Cert::loadCert("cert1") == nullptr);
@@ -241,8 +247,13 @@ TEST_CASE("Persistent save duplicate cert or id", "[Certs]") {
     issuerParams1.validity_secs = 3600*24;
     Retained<Cert> cert1 = new Cert(DistinguishedName(kSubjectName), issuerParams1, key1);
 
+    // CBL-1036: Remove a left over cert that causes test failures on some machines.
+    Cert::deleteCert("Jane Doe");
+    CHECK(Cert::loadCert("Jane Doe") == nullptr);
+    
     // Delete cert1 to cleanup:
     Cert::deleteCert("cert1");
+    CHECK(Cert::loadCert("cert1") == nullptr);
     
     // Save cert1:
     cert1->save("cert1", true);
@@ -403,6 +414,9 @@ TEST_CASE("Cert request", "[Certs]") {
     Retained<Cert> clientCert = csr2->sign(caClientParams, caKey, caCert);
 
     cerr << "Client cert info:\n" << clientCert->summary("\t");
+
+    CHECK(clientCert->isSigned());
+    CHECK(!clientCert->isSelfSigned());
 }
 
 

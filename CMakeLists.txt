@@ -68,6 +68,19 @@ option(LITECORE_BUILD_TESTS "Builds C4Tests and CppTests" ON)
 option(MAINTAINER_MODE "The configuration pre-choosen by maintainers" ON)
 option(SQLITE_ENABLE_RTREE "Enable r-tree extension in sqlite3 module" OFF)
 
+if(CODE_COVERAGE_ENABLED)
+   message("Code coverage enabled, forcing sanitizers off")
+   set(SANITIZE_FOR_DEBUG_ENABLED OFF CACHE BOOL "Enable -fsanitize for Debug Build" FORCE)
+   if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug" AND "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage")
+     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} --coverage")
+   elseif(NOT "${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+     message(WARN " Code coverage not supported for non-debug builds")
+   else()
+     message(WARN " Code coverage only supported on Clang")
+   endif()
+endif()
+
 add_definitions(
     -DCMAKE                  # Let the source know this is a CMAKE build
     -D__STDC_FORMAT_MACROS   # Enables printf format macros for variable sized types (e.g. size_t)
@@ -99,17 +112,6 @@ endif(MSVC)
 if(CMAKE_COMPILER_IS_GNUCC)
     # Suppress an annoying note about GCC 7 ABI changes, and linker errors about the Fleece C API
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-psabi -Wno-odr")
-endif()
-
-if(CODE_COVERAGE_ENABLED)
-  if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug" AND "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} --coverage")
-  elseif(NOT "${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
-    message(WARN " Code coverage not supported for non-debug builds")
-  else()
-    message(WARN " Code coverage only supported on Clang")
-  endif()
 endif()
 
 setup_globals()

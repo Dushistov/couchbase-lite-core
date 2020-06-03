@@ -342,7 +342,7 @@ TEST_CASE_METHOD(ReplicatorLoopbackTest, "Push With Existing Key", "[Push]") {
     // Get one of the pushed docs from db2 and look up "gender":
     c4::ref<C4Document> doc = c4doc_get(db2, "0000001"_sl, true, nullptr);
     REQUIRE(doc);
-    Doc rev = c4doc_createFleeceDoc(doc);
+    Doc rev = getFleeceDoc(doc);
     Value gender = rev["gender"_sl];
     REQUIRE(gender != nullptr);
     REQUIRE(gender.asstring() == "female");
@@ -633,6 +633,7 @@ TEST_CASE_METHOD(ReplicatorLoopbackTest, "Continuous Super-Fast Push", "[Push][C
 
 
 TEST_CASE_METHOD(ReplicatorLoopbackTest, "Continuous Push From Both Sides", "[Push][Continuous]") {
+    // NOTE: Despite the name, both sides are not active. Client pushes & pulls, server is passive.
     alloc_slice docID("doc");
     auto clientOpts = Replicator::Options(kC4Continuous, kC4Continuous)
                         .setProperty(slice(kC4ReplicatorOptionProgressLevel), 1);
@@ -660,6 +661,7 @@ TEST_CASE_METHOD(ReplicatorLoopbackTest, "Continuous Push From Both Sides", "[Pu
     
     _expectedDocumentCount = -1;
     _expectedDocPushErrors = {"doc"};
+    _ignoreTransientErrors = true;      // (retries will show up as transient errors)
     _checkDocsFinished = false;
 
     runReplicators(clientOpts, serverOpts);

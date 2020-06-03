@@ -81,6 +81,7 @@ public:
         _replServer = new Replicator(dbServer,
                                      new LoopbackWebSocket(alloc_slice("ws://cli/"_sl), Role::Server, kLatency),
                                      *this, opts2);
+        Log("Client replicator is %s", _replClient->loggingName().c_str());
 
         // Response headers:
         Headers headers;
@@ -231,10 +232,12 @@ public:
                             (rev->errorIsTransient ? "transient " : ""),
                             (dir == Dir::kPushing ? "pushing" : "pulling"),
                             SPLAT(rev->docID), SPLAT(rev->revID), message);
-                        if (dir == Dir::kPushing)
-                            _docPushErrors.emplace(rev->docID);
-                        else
-                            _docPullErrors.emplace(rev->docID);
+                        if (!rev->errorIsTransient || !_ignoreTransientErrors) {
+                            if (dir == Dir::kPushing)
+                                _docPushErrors.emplace(rev->docID);
+                            else
+                                _docPullErrors.emplace(rev->docID);
+                        }
                     }
                 } else {
                     Log(">> Replicator %s '%.*s' #%.*s",
@@ -532,6 +535,7 @@ public:
     C4Error _expectedError {};
     set<string> _docPushErrors, _docPullErrors;
     set<string> _expectedDocPushErrors, _expectedDocPullErrors;
+    bool _ignoreTransientErrors = false;
     bool _checkDocsFinished {true};
     multiset<string> _docsFinished, _expectedDocsFinished;
     unsigned _blobPushProgressCallbacks {0}, _blobPullProgressCallbacks {0};

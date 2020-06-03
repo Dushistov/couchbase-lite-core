@@ -13,12 +13,17 @@
 namespace sockpp {
     class mbedtls_context;
 }
+namespace litecore {
+    class LogDomain;
+}
 namespace litecore::crypto {
     class Cert;
     class Identity;
 }
 
 namespace litecore { namespace net {
+
+    extern LogDomain TLSLogDomain;
 
     /** TLS configuration for sockets and listeners.
         A thin veneer around sockpp::tls_context. */
@@ -46,6 +51,7 @@ namespace litecore { namespace net {
 
     protected:
         ~TLSContext();
+        bool findSigningRootCert(const std::string &certStr, std::string &rootStr);
 
     private:
         std::unique_ptr<sockpp::mbedtls_context> _context;
