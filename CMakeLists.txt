@@ -273,9 +273,6 @@ if(WIN32)
         vendor/SQLiteCpp/sqlite3
     )
 else()
-    if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/empty.cpp")
-        file(WRITE empty.cpp)
-    endif()
     add_library(LiteCore SHARED empty.cpp)
 endif()
 

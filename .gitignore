@@ -16,7 +16,6 @@ DerivedData/
 /build_cmake/*
 !/build_cmake/scripts
 stripopts
-empty.cpp
 
 # Huge performance-test files that have to be manually installed:
 C/tests/data/en-wikipedia-*.json
