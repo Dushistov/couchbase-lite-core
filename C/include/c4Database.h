@@ -35,7 +35,7 @@ extern "C" {
 
 
     /** Boolean options for C4DatabaseConfig. */
-    typedef C4_OPTIONS(uint32_t, C4DatabaseFlags) {
+    C4_OPTIONS(uint32_t, C4DatabaseFlags) {
         kC4DB_Create        = 1,    ///< Create the file if it doesn't exist
         kC4DB_ReadOnly      = 2,    ///< Open file read-only
         kC4DB_AutoCompact   = 4,    ///< Enable auto-compaction
@@ -46,13 +46,13 @@ extern "C" {
     };
 
     /** Encryption algorithms. */
-    typedef C4_ENUM(uint32_t, C4EncryptionAlgorithm) {
+    C4_ENUM(uint32_t, C4EncryptionAlgorithm) {
         kC4EncryptionNone = 0,      ///< No encryption (default)
         kC4EncryptionAES256,        ///< AES with 256-bit key
     };
 
     /** Encryption key sizes (in bytes). */
-    typedef C4_ENUM(uint64_t, C4EncryptionKeySize) {
+    C4_ENUM(uint64_t, C4EncryptionKeySize) {
         kC4EncryptionKeySizeAES256 = 32,
     };
 
@@ -229,7 +229,7 @@ extern "C" {
 
     /** Types of maintenance that \ref c4db_maintenance can perform.
         NOTE: Enum values must match the ones in DataFile::MaintenanceType */
-    typedef C4_ENUM(uint32_t, C4MaintenanceType) {
+    C4_ENUM(uint32_t, C4MaintenanceType) {
         kC4Compact,         ///< Compact the database file and garbage-collect attachments
         kC4Reindex,         ///< Rebuild indexes (not normally needed)
         kC4IntegrityCheck,  ///< Check for database corruption, returning an error if it finds any
@@ -314,7 +314,7 @@ extern "C" {
 
     //-------- DEPRECATED API --------
 
-    typedef C4_ENUM(uint32_t, C4DocumentVersioning) {
+    C4_ENUM(uint32_t, C4DocumentVersioning) {
         kC4RevisionTrees,           ///< Revision trees
     };
 

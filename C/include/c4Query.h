@@ -32,7 +32,7 @@ extern "C" {
 
 
     /** Supported query languages. */
-    typedef C4_ENUM(uint32_t, C4QueryLanguage) {
+    C4_ENUM(uint32_t, C4QueryLanguage) {
         kC4JSONQuery,   ///< JSON query schema as documented in wiki
         kC4N1QLQuery,   ///< N1QL syntax
     };
