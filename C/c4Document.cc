@@ -358,7 +358,7 @@ char* c4doc_generateID(char *docID, size_t bufferSize) noexcept {
         return nullptr;
     static const char kBase64[65] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
     "0123456789-_";
-    uint8_t r[kC4GeneratedIDLength - 1];
+    uint8_t r[kC4GeneratedIDLength - 1] = {0};
     SecureRandomize({r, sizeof(r)});
     docID[0] = '~';
     for (unsigned i = 0; i < sizeof(r); ++i)

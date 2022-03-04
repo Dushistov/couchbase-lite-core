@@ -65,7 +65,7 @@ namespace litecore { namespace blip {
     void Codec::readAndVerifyChecksum(slice &input) const {
         if (input.size < kChecksumSize)
             error::_throw(error::CorruptData, "BLIP message ends before checksum");
-        uint32_t chk;
+        uint32_t chk = 0;
         static_assert(kChecksumSize == sizeof(chk), "kChecksumSize is wrong");
         input.readInto(slice(&chk, sizeof(chk)));
         chk = endian::dec32(chk);
