@@ -255,6 +255,7 @@ namespace litecore {
             entry = &*change;
         }
 
+        entry->external = false;
         if (!inTransaction()) {
             entry->committedSequence = sequence;
             entry->external = true; // it must have come from addExternalTransaction()
