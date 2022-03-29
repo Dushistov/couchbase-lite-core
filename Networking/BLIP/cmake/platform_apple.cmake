@@ -18,7 +18,7 @@ endfunction()
 
 function(setup_build)
     target_link_libraries(
-        BLIPObjects INTERFACE
+        BLIPStatic INTERFACE
         z
     )
 endfunction()

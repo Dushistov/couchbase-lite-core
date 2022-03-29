@@ -12,7 +12,8 @@ It uses some predefined data as follows:
 The test runner depends on multiple other libraries from multiple git repositories:
 
 - LiteCore static library (../..)
-- BLIP object library (../../Networking/BLIP)
+- BLIP static library (../../Networking/BLIP)
+- CivetWeb static library (../../vendor/civetweb)
 
 In addition, there are also some system dependencies that are not listed here
 ]]#
@@ -145,5 +146,6 @@ target_link_libraries(
     LiteCoreStatic
     LiteCoreREST_Static
     LiteCoreWebSocket
+    BLIPStatic          # Explicitly needed in here because GCC is a dinosaur...
     ${END_GROUP_FLAG}
 )
