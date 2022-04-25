@@ -224,8 +224,8 @@ namespace litecore {
                                            uint64_t bodySize,
                                            RevisionFlags flags)
     {
-        logDebug("documentChanged('%.*s', %.*s, %llu, size=%llu, flags=%hhx",
-                 SPLAT(docID), SPLAT(revID), sequence, bodySize, flags);
+        logDebug("documentChanged('%.*s', %.*s, %" PRIu64 ", size=%" PRIu64 ", flags=%hhx",
+                 SPLAT(docID), SPLAT(revID), uint64_t(sequence), bodySize, flags);
         auto shortBodySize = (uint32_t)min(bodySize, (uint64_t)UINT32_MAX);
         bool listChanged = true;
         Entry *entry;
