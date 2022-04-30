@@ -239,13 +239,13 @@ target_include_directories(
 )
 
 if(WIN32)
-    add_library(LiteCore SHARED $<TARGET_OBJECTS:LiteCoreObjects> MSVC/SQLiteTempDirectory.cc) #No-op for non-UWP
+    add_library(LiteCore SHARED EXCLUDE_FROM_ALL $<TARGET_OBJECTS:LiteCoreObjects> MSVC/SQLiteTempDirectory.cc) #No-op for non-UWP
     target_include_directories(
         LiteCore PRIVATE
         vendor/SQLiteCpp/sqlite3
     )
 else()
-    add_library(LiteCore SHARED $<TARGET_OBJECTS:LiteCoreObjects>)
+    add_library(LiteCore SHARED EXCLUDE_FROM_ALL $<TARGET_OBJECTS:LiteCoreObjects>)
 endif()
 
 add_library(LiteCoreStatic STATIC EXCLUDE_FROM_ALL $<TARGET_OBJECTS:LiteCoreObjects>)
