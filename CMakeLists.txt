@@ -280,7 +280,7 @@ target_include_directories(
 )
 
 if(WIN32)
-    add_library(LiteCore SHARED MSVC/SQLiteTempDirectory.cc) #No-op for non-UWP
+    add_library(LiteCore SHARED EXCLUDE_FROM_ALL MSVC/SQLiteTempDirectory.cc) #No-op for non-UWP
     target_include_directories(
         LiteCore PRIVATE
         vendor/SQLiteCpp/sqlite3
@@ -289,7 +289,7 @@ else()
     if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/empty.cpp")
         file(WRITE empty.cpp)
     endif()
-    add_library(LiteCore SHARED empty.cpp)
+    add_library(LiteCore SHARED EXCLUDE_FROM_ALL empty.cpp)
 endif()
 
 # Library flags defined in platform_linux
