@@ -261,7 +261,11 @@ namespace litecore {
                 if (!revID)
                     return false;
             }
+            if ( remoteID == RevTree::kNoRemoteID ) {
+                doc->revIsRejected(revID);
+            } else {
             doc->setRemoteAncestorRevID(remoteID, revID);
+            }
             doc->save();
             return true;
         }

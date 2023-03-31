@@ -180,7 +180,10 @@ namespace litecore {
 
         const Rev* latestRevisionOnRemote(RemoteID);
         void setLatestRevisionOnRemote(RemoteID, const Rev*);
-        const RemoteRevMap& remoteRevisions() const         {return _remoteRevs;}
+        const std::vector<const Rev*> getRejectedRevs() const FLPURE { return _rejectedRevs; }
+        void       revIsRejected(const Rev* rev);
+
+        const RemoteRevMap& remoteRevisions() const { return _remoteRevs; }
 
 #if DEBUG
         void dump();
@@ -208,12 +211,13 @@ namespace litecore {
         void compact();
         void checkForResolvedConflict();
 
-        bool                     _sorted {true};        // Is _revs currently sorted?
+        bool                     _sorted{true};          // Is _revs currently sorted?
         std::vector<Rev*>        _revs;                 // Revs in sorted order
         std::deque<Rev>          _revsStorage;          // Actual storage of the Rev objects
         std::vector<alloc_slice> _insertedData;         // Storage for new revids
         RemoteRevMap             _remoteRevs;           // Tracks current rev for a remote DB URL
-        unsigned                 _pruneDepth {UINT_MAX};// Tree depth to prune to
+        unsigned                 _pruneDepth{UINT_MAX};  // Tree depth to prune to
+        std::vector<const Rev*>  _rejectedRevs;          // Pushes rejected by the remote
     };
 
 }

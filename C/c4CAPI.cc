@@ -879,6 +879,7 @@ C4Timestamp c4doc_getExpiration(C4Database *db, C4Slice docID, C4Error *outError
     return c4coll_getDocExpiration(coll, docID, outError);
 }
 
+bool c4doc_isRevRejected(C4Document* doc) noexcept { return doc->isRevRejected(); }
 
 bool c4doc_selectRevision(C4Document* doc,
                           C4Slice revID,

@@ -267,6 +267,14 @@ namespace litecore {
             _doc.setRemoteRevision(RemoteID(remote), revision);
         }
 
+        bool isRevRejected() override {
+            Assert(false, "not implemented");
+            return false;
+        }
+
+        void revIsRejected(slice  revID) override {
+            Assert(false, "not implemented");
+        }
 
 #pragma mark - EXISTENCE / LOADING:
 

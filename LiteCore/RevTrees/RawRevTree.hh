@@ -37,11 +37,13 @@ namespace litecore {
 
         static std::deque<Rev> decodeTree(slice raw_tree,
                                           RevTree::RemoteRevMap &remoteMap,
+                                          std::vector<const Rev*>& rejectedRevs,
                                           RevTree *owner NONNULL,
                                           sequence_t curSeq);
 
         static alloc_slice encodeTree(const std::vector<Rev*> &revs,
-                                      const RevTree::RemoteRevMap &remoteMap);
+                                      const RevTree::RemoteRevMap &remoteMap,
+                                      const std::vector<const Rev*>& rejectedRevs);
 
         static inline slice getCurrentRevBody(slice raw_tree) noexcept {
             auto rawRev = (const RawRevision*)raw_tree.buf;
