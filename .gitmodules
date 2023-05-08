@@ -21,4 +21,4 @@
 	url = https://github.com/Dushistov/sqlite3-unicodesn
 [submodule "vendor/fleece"]
 	path = vendor/fleece
-	url = https://github.com/couchbase/fleece
+	url = https://github.com/Dushistov/fleece
