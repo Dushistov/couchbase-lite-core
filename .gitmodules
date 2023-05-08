@@ -18,7 +18,7 @@
 	url = https://github.com/couchbasedeps/ios-cmake
 [submodule "vendor/sqlite3-unicodesn"]
 	path = vendor/sqlite3-unicodesn
-	url = https://github.com/couchbasedeps/sqlite3-unicodesn
+	url = https://github.com/Dushistov/sqlite3-unicodesn
 [submodule "vendor/fleece"]
 	path = vendor/fleece
 	url = https://github.com/couchbase/fleece
