@@ -479,7 +479,7 @@ namespace litecore {
     DocChangeNotifier::DocChangeNotifier(SequenceTracker &t, slice docID, Callback cb)
     :tracker(t),
     _docEntry(tracker.addDocChangeNotifier(docID, this))
-    ,callback(move(cb))
+    ,callback(std::move(cb))
     {
         t._logVerbose("Added doc change notifier %p for '%.*s'", this, SPLAT(docID));
     }
@@ -512,7 +512,7 @@ namespace litecore {
     CollectionChangeNotifier::CollectionChangeNotifier(SequenceTracker &t, Callback cb, sequence_t afterSeq)
     :Logging(ChangesLog)
     ,tracker(t)
-    ,callback(move(cb))
+    ,callback(std::move(cb))
     ,_placeholder(tracker.addPlaceholderAfter(this, afterSeq))
     {
         if (callback)

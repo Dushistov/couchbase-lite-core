@@ -607,7 +607,7 @@ namespace litecore {
         auto collection = make_unique<CollectionImpl>(this, name, store);
         // Update its state & add it to _collections:
         auto collectionPtr = collection.get();
-        _collections.insert({collection->getName(), move(collection)});
+        _collections.insert({collection->getName(), std::move(collection)});
         if (isInTransaction())
             collectionPtr->transactionBegan();
         return collectionPtr;                                               //-> New object

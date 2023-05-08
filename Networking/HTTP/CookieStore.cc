@@ -199,7 +199,7 @@ namespace litecore { namespace net {
             auto cookie = make_unique<const Cookie>(i.value().asDict());
             if (cookie->valid()) {
                 if (!cookie->expired())
-                    _cookies.emplace_back(move(cookie));
+                    _cookies.emplace_back(std::move(cookie));
             } else {
                 Warn("Couldn't read a cookie from persisted cookie store!");
             }
@@ -256,7 +256,7 @@ namespace litecore { namespace net {
         }
 
         lock_guard<mutex> lock(_mutex);
-        _addCookie(move(newCookie));
+        _addCookie(std::move(newCookie));
         return true;
     }
 
@@ -265,7 +265,7 @@ namespace litecore { namespace net {
         CookieStore other(data);
         lock_guard<mutex> lock(_mutex);
         for (CookiePtr &cookie : other._cookies)
-            _addCookie(move(cookie));
+            _addCookie(std::move(cookie));
     }
 
 
@@ -292,7 +292,7 @@ namespace litecore { namespace net {
         // Add the new cookie:
         if (newCookie->persistent())
             _changed = true;
-        _cookies.emplace_back(move(newCookie));
+        _cookies.emplace_back(std::move(newCookie));
     }
 
 

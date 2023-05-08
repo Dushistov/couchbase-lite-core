@@ -167,7 +167,7 @@ namespace litecore {
 
         Retained<C4Document> getDocumentBySequence(C4SequenceNumber sequence) const override {
             if (Record rec = keyStore().get(sequence, kEntireBody); rec.exists())
-                return _documentFactory->newDocumentInstance(move(rec));
+                return _documentFactory->newDocumentInstance(std::move(rec));
             else
                 return nullptr;
         }
