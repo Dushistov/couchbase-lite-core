@@ -39,14 +39,6 @@ Platform logic is largely separated into the cmake/platform_*.cmake files.  Plat
 
 cmake_minimum_required (VERSION 3.21...4.0)
 
-# Mac/apple setup -- must appear before the first "project()" line"
-set(CMAKE_OSX_DEPLOYMENT_TARGET "12.0")
-if(NOT DEFINED CMAKE_OSX_SYSROOT)
-    # Tells Mac builds to use the current SDK's headers & libs, not what's in the OS.
-    set(CMAKE_OSX_SYSROOT macosx)
-endif()
-set(CMAKE_OSX_ARCHITECTURES x86_64 arm64)
-
 if(DEFINED ENV{VERSION})
     message(VERBOSE "Using VERSION:$ENV{VERSION} from environment variable")
     set(CBL_VERSION_STRING $ENV{VERSION})
