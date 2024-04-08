@@ -458,9 +458,9 @@ void RevTree::resetConflictSequence(const Rev* winningRev) {
 
         // Only one rev in a branch can have the keepBody flag
         bool conflict = rev->isConflict();
-        for (auto ancestor = rev->parent; ancestor; ancestor = ancestor->parent) {
-            if (conflict && !ancestor->isConflict())
-                break;  // stop at end of a conflict branch
+        for ( auto ancestor = rev->parent; ancestor; ancestor = ancestor->parent ) {
+            if ( conflict && !ancestor->isConflict() ) break;  // stop at end of a conflict branch
+            if ( isLatestRemoteRevision(ancestor) ) continue;  // don't clear keepBody for current remote revisions
             const_cast<Rev*>(ancestor)->clearFlag(Rev::kKeepBody);
         }
         _changed = true;
