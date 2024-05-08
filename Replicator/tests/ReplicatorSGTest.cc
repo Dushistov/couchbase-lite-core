@@ -827,9 +827,12 @@ TEST_CASE_METHOD(ReplicatorSGTest, "Replicator count balance", "[.SyncServer]") 
         std::this_thread::sleep_for(1ms);
     }
 
-    C4Log("-------- status.total=%lld, status.completed=%lld, status.docCount=%lld, number of documents in the database=%lld\n",
-          status.progress.unitsTotal, status.progress.unitsCompleted,
-          status.progress.documentCount, c4db_getDocumentCount(db));
+    C4Log("-------- status.total=%lld, status.completed=%lld, status.docCount=%lld, "
+          "number of documents in the database=%lld\n",
+          static_cast<signed long long>(status.progress.unitsTotal),
+          static_cast<signed long long>(status.progress.unitsCompleted),
+          static_cast<signed long long>(status.progress.documentCount),
+          static_cast<signed long long>(c4db_getDocumentCount(db)));
 
     CHECK(status.progress.unitsTotal == status.progress.unitsCompleted);
 }
