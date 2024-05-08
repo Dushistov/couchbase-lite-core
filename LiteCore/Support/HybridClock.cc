@@ -107,7 +107,7 @@ namespace litecore {
             if ( uint64_t(seen.wall) > uint64_t(localWall) + kMaxClockSkew ) {
                 Warn("HybridClock: received time 0x%016llx is too far in the future (local time is "
                      "0x%016llx)",
-                     uint64_t(seen.wall), uint64_t(localWall));
+                     static_cast<unsigned long long>(seen.wall), static_cast<unsigned long long>(localWall));
                 return hybridComponents{};
             }
 
@@ -125,10 +125,10 @@ namespace litecore {
 
     bool HybridClock::checkTime(logicalTime t) const {
         if ( t < _minValid ) {
-            Warn("HybridClock: received time 0x%016llx is too far in the past", uint64_t(t));
+            Warn("HybridClock: received time 0x%016llx is too far in the past", static_cast<unsigned long long>(t));
             return false;
         } else if ( t > kMaxValidTime ) {
-            Warn("HybridClock: received time 0x%016llx is invalid; distant future", uint64_t(t));
+            Warn("HybridClock: received time 0x%016llx is invalid; distant future", static_cast<unsigned long long>(t));
             return false;
         } else {
             return true;
