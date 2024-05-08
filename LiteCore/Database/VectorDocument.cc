@@ -80,7 +80,7 @@ namespace litecore {
                 }
                 return binaryID;
             }
-            error::_throw(error::BadRevisionID, "Not a version string: '%.*s'", SPLAT(revID));
+            error::_throw(error::BadRevisionID, "Not a version string: revID is null");
         }
 
 #pragma mark - SELECTING REVISIONS:
