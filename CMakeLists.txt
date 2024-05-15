@@ -265,10 +265,10 @@ else()
     add_library(LiteCore SHARED EXCLUDE_FROM_ALL $<TARGET_OBJECTS:LiteCoreObjects>)
 endif()
 
-add_library(LiteCoreStatic STATIC EXCLUDE_FROM_ALL $<TARGET_OBJECTS:LiteCoreObjects>)
+add_library(LiteCoreStatic STATIC EXCLUDE_FROM_ALL $<TARGET_OBJECTS:LiteCoreObjects> dummy.cpp)
 target_link_libraries(LiteCoreStatic PRIVATE LiteCoreObjects)
 
-add_library(BLIPStatic STATIC EXCLUDE_FROM_ALL $<TARGET_OBJECTS:BLIPObjects>)
+add_library(BLIPStatic STATIC EXCLUDE_FROM_ALL $<TARGET_OBJECTS:BLIPObjects> dummy.cpp)
 target_link_libraries(BLIPStatic PRIVATE BLIPObjects)
 
 # Library flags defined in platform_linux
