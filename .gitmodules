@@ -21,7 +21,7 @@
 	url = https://github.com/couchbasedeps/sqlite3-unicodesn
 [submodule "vendor/fleece"]
 	path = vendor/fleece
-	url = https://github.com/couchbase/fleece
+	url = https://github.com/Dushistov/fleece
 [submodule "tools"]
 	path = tools
 	url = https://github.com/couchbaselabs/litecore-download-script
