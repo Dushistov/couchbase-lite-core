@@ -489,8 +489,6 @@ namespace litecore {
             return rows;
         }
 
-        bool isIndexTrained(slice indexName) const override { return keyStore().isIndexTrained(indexName); }
-
 #pragma mark - OBSERVERS:
 
         std::unique_ptr<C4CollectionObserver> observe(CollectionObserverCallback cb) override {

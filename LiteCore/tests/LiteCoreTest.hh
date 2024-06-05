@@ -120,7 +120,7 @@ class DataFileTestFixture
     std::unique_ptr<DataFile> db;
     KeyStore*                 store{nullptr};
 
-    FilePath    databasePath();
+    FilePath    databasePath(const string& baseName);
     void        deleteDatabase();
     static void deleteDatabase(const FilePath& dbPath);
     DataFile*   newDatabase(const FilePath& path, const DataFile::Options* = nullptr);
@@ -144,5 +144,5 @@ class DataFileTestFixture
 
     alloc_slice blobAccessor(const fleece::impl::Dict*) const override;
 
-    string _databaseName{"db"};
+    string _databaseName{"cbl_core_temp"};
 };

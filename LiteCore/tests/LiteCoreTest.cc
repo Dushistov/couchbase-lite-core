@@ -79,8 +79,8 @@ static LogDomain::Callback_t sPrevCallback;
 static atomic_uint           sWarningsLogged;
 
 static void logCallback(const LogDomain& domain, LogLevel level, const char* fmt, va_list args) {
-    if ( level >= LogLevel::Warning ) { ++sWarningsLogged; }
     sPrevCallback(domain, level, fmt, args);
+    if ( level >= LogLevel::Warning ) ++sWarningsLogged;
 }
 
 TestFixture::TestFixture() : _warningsAlreadyLogged(sWarningsLogged), _objectCount(c4_getObjectCount()) {
@@ -140,7 +140,9 @@ FilePath TestFixture::GetPath(const string& name, const string& extension) noexc
 
 DataFile::Factory& DataFileTestFixture::factory() { return SQLiteDataFile::sqliteFactory(); }
 
-FilePath DataFileTestFixture::databasePath() { return sTempDir[string("db") + factory().filenameExtension()]; }
+FilePath DataFileTestFixture::databasePath(const string& baseName) {
+    return GetPath(baseName, factory().filenameExtension());
+}
 
 /*static*/ void DataFileTestFixture::deleteDatabase(const FilePath& dbPath) {
     auto factory = DataFile::factoryForFile(dbPath);
@@ -164,7 +166,7 @@ void DataFileTestFixture::reopenDatabase(const DataFile::Options* newOptions) {
 }
 
 DataFileTestFixture::DataFileTestFixture(int testOption, const DataFile::Options* options) {
-    auto dbPath = databasePath();
+    auto dbPath = databasePath(databaseName());
     deleteDatabase(dbPath);
     db.reset(newDatabase(dbPath, options));
     store = &db->defaultKeyStore();
