@@ -238,7 +238,6 @@ set(
     Replicator
     REST
     vendor/SQLiteCpp/include
-    vendor/SQLiteCpp/sqlite3/ext
     vendor/sqlite3-unicodesn
     vendor/mbedtls/include
     vendor/mbedtls/crypto/include

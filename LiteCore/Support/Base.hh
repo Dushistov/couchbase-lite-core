@@ -34,7 +34,6 @@ namespace litecore {
     using std::pair;
     using std::shared_ptr;
     using std::string;
-    using std::string_view;
     using std::unique_ptr;
 
     using fleece::alloc_slice;

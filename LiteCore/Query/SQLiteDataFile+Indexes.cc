@@ -49,13 +49,8 @@ namespace litecore {
             error::_throw(error::CantUpgradeDatabase, "Database needs upgrade of index metadata");
 
         LogTo(DBLog, "Upgrading database to use 'indexes' table...");
-        _exec("CREATE TABLE indexes ("
-              "name TEXT PRIMARY KEY, "   // Name of index
-              "type INTEGER NOT NULL, "   // C4IndexType
-              "keyStore TEXT NOT NULL, "  // Name of the KeyStore it indexes
-              "expression TEXT, "         // Indexed property expression (JSON or N1QL)
-              "indexTableName TEXT, "     // Index's SQLite name
-              "lastSeq INTEGER)");        // Last indexed sequence, for lazy indexes, else null
+        _exec("CREATE TABLE indexes (name TEXT PRIMARY KEY, type INTEGER NOT NULL,"
+              " keyStore TEXT NOT NULL, expression TEXT, indexTableName TEXT)");
         ensureSchemaVersionAtLeast(SchemaVersion::WithIndexTable);  // Backward-incompatible with version 2.0/2.1
 
         for ( auto& spec : getIndexesOldStyle() ) registerIndex(spec, spec.keyStoreName, spec.indexTableName);
@@ -144,8 +139,7 @@ namespace litecore {
     vector<SQLiteIndexSpec> SQLiteDataFile::getIndexes(const KeyStore* store) {
         if ( indexTableExists() ) {
             vector<SQLiteIndexSpec> indexes;
-            SQLite::Statement       stmt(*this, "SELECT name, type, expression, keyStore, "
-                                                      "indexTableName, lastSeq "
+            SQLite::Statement       stmt(*this, "SELECT name, type, expression, keyStore, indexTableName "
                                                       "FROM indexes ORDER BY name");
             while ( stmt.executeStep() ) {
                 string keyStoreName = stmt.getColumn(3);
@@ -196,20 +190,12 @@ namespace litecore {
     // Gets info of a single index. (Subroutine of create/deleteIndex.)
     optional<SQLiteIndexSpec> SQLiteDataFile::getIndex(slice name) {
         if ( !indexTableExists() ) return nullopt;
-        SQLite::Statement stmt(*this, "SELECT name, type, expression, keyStore, "
-                                      "indexTableName, lastSeq "
+        SQLite::Statement stmt(*this, "SELECT name, type, expression, keyStore, indexTableName "
                                       "FROM indexes WHERE name=?");
         stmt.bindNoCopy(1, (char*)name.buf, (int)name.size);
         if ( stmt.executeStep() ) return specFromStatement(stmt);
         else
             return nullopt;
-    }
-
-    void SQLiteDataFile::setIndexSequences(slice name, slice sequencesJSON) {
-        SQLite::Statement stmt(*this, "UPDATE indexes SET lastSeq=?1 WHERE name=?2");
-        stmt.bindNoCopy(1, (char*)sequencesJSON.buf, int(sequencesJSON.size));
-        stmt.bindNoCopy(2, (char*)name.buf, (int)name.size);
-        stmt.exec();
     }
 
     SQLiteIndexSpec SQLiteDataFile::specFromStatement(SQLite::Statement& stmt) {
@@ -219,17 +205,13 @@ namespace litecore {
             expression = col;
             if ( col[0] != '[' && col[0] != '{' ) queryLanguage = QueryLanguage::kN1QL;
         }
-        SQLiteIndexSpec spec{stmt.getColumn(0).getString(),
-                             (IndexSpec::Type)stmt.getColumn(1).getInt(),
-                             expression,
-                             queryLanguage,
-                             stmt.getColumn(3).getString(),
-                             stmt.getColumn(4).getString()};
-        if ( auto col5 = stmt.getColumn(5); col5.isText() ) spec.indexedSequences = col5.getText();
-        return spec;
+        return {stmt.getColumn(0).getString(),
+                (IndexSpec::Type)stmt.getColumn(1).getInt(),
+                expression,
+                queryLanguage,
+                stmt.getColumn(3).getString(),
+                stmt.getColumn(4).getString()};
     }
-
-#pragma mark - FOR DEBUGGING / INSPECTION:
 
     void SQLiteDataFile::inspectIndex(slice name, int64_t& outRowCount, alloc_slice* outRows) {
         /* See  https://sqlite.org/imposter.html

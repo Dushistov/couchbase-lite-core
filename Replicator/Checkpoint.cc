@@ -52,7 +52,12 @@ namespace litecore::repl {
             // New property for sparse checkpoint. Write the pending sequence ranges as
             // (sequence, length) pairs in an array, omitting the 'infinity' at the end of the last.
             enc.writeKey("localCompleted"_sl);
-            _completed.encode_fleece(enc);
+            enc.beginArray();
+            for ( auto& range : _completed ) {
+                enc.writeUInt(uint64_t(range.first));
+                enc.writeUInt(uint64_t(range.second - range.first));
+            };
+            enc.endArray();
         }
 #endif
 
@@ -86,7 +91,11 @@ namespace litecore::repl {
         // New properties for sparse checkpoint:
         Array pending = root["localCompleted"].asArray();
         if ( pending ) {
-            if ( !_completed.read_fleece(pending) ) LogError(SyncLog, "Unparseable SequenceSet in checkpoint");
+            for ( Array::iterator i(pending); i; ++i ) {
+                auto first = C4SequenceNumber(i->asUnsigned());
+                auto last  = C4SequenceNumber((++i)->asUnsigned());
+                _completed.add(first, first + (uint64_t)last);
+            }
         } else
 #endif
         {

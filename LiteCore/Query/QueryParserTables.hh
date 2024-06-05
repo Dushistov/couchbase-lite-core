@@ -33,7 +33,7 @@ namespace litecore {
         OpHandler handler;           // Method that parses this operation
     };
 
-    inline constexpr QueryParser::Operation QueryParser::kOperationList[] = {
+    constexpr QueryParser::Operation QueryParser::kOperationList[] = {
             {".", 0, 9, 99, &QueryParser::propertyOp},
             {"$", 1, 1, 99, &QueryParser::parameterOp},
             {"?", 1, 9, 99, &QueryParser::variableOp},
@@ -93,13 +93,12 @@ namespace litecore {
 
     // Declarations of some operations that don't exist in the input but are synthesized internally:
 
-    inline constexpr QueryParser::Operation QueryParser::kArgListOperation{",", 0, 9, -2, &QueryParser::infixOp};
-    inline constexpr QueryParser::Operation QueryParser::kColumnListOperation{",", 0, 9, -2, &QueryParser::infixOp};
-    inline constexpr QueryParser::Operation QueryParser::kResultListOperation{",", 0, 9, -2, &QueryParser::resultOp};
-    inline constexpr QueryParser::Operation QueryParser::kExpressionListOperation{nullslice, 1, 9, -3,
-                                                                                  &QueryParser::infixOp};
-    inline constexpr QueryParser::Operation QueryParser::kOuterOperation{nullslice, 1, 1, -1};
-    inline constexpr QueryParser::Operation QueryParser::kHighPrecedenceOperation{nullslice, 1, 1, 10};
+    constexpr QueryParser::Operation QueryParser::kArgListOperation{",", 0, 9, -2, &QueryParser::infixOp};
+    constexpr QueryParser::Operation QueryParser::kColumnListOperation{",", 0, 9, -2, &QueryParser::infixOp};
+    constexpr QueryParser::Operation QueryParser::kResultListOperation{",", 0, 9, -2, &QueryParser::resultOp};
+    constexpr QueryParser::Operation QueryParser::kExpressionListOperation{nullslice, 1, 9, -3, &QueryParser::infixOp};
+    constexpr QueryParser::Operation QueryParser::kOuterOperation{nullslice, 1, 1, -1};
+    constexpr QueryParser::Operation QueryParser::kHighPrecedenceOperation{nullslice, 1, 1, 10};
 
     // Table of functions. Used when the 1st item of the array ends with "()".
     // https://developer.couchbase.com/documentation/server/current/n1ql/n1ql-language-reference/functions.html
@@ -114,7 +113,7 @@ namespace litecore {
         bool  wants_collation;   // Does this function support a collation argument?
     };
 
-    inline static constexpr FunctionSpec kFunctionList[] = {
+    static constexpr FunctionSpec kFunctionList[] = {
             // Array:
             {"array_agg", 1, 1},
             {"array_avg", 1, 1},
@@ -251,7 +250,7 @@ namespace litecore {
 
     enum JoinType { kInvalidJoin = -1, kInner = 0, kLeft, kLeftOuter, kCross };
 
-    inline static constexpr const char* kJoinTypeNames[] = {
+    static constexpr const char* kJoinTypeNames[] = {
             "INNER", "LEFT", "LEFT OUTER", "CROSS",
             nullptr  // End of data
     };
