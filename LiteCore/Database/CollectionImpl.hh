@@ -407,6 +407,7 @@ namespace litecore {
                         ftsOpt.stopWords        = indexOptions->stopWords;
                     }
                     break;
+#if 0
                 case kC4VectorIndex:
                     if ( indexOptions ) {
                         auto& c4Opt   = indexOptions->vector;
@@ -429,6 +430,7 @@ namespace litecore {
                         error::_throw(error::InvalidParameter, "Vector index requires options");
                     }
                     break;
+#endif
                 default:
                     break;
             }

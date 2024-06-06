@@ -110,9 +110,10 @@ typedef struct C4IndexOptions {
         To provide a custom list of words, use a string containing the words in lowercase
         separated by spaces. */
     const char* C4NULLABLE stopWords;
-
+#if 0
     /** Options for vector indexes. */
     C4VectorIndexOptions vector;
+#endif
 } C4IndexOptions;
 
 /** @} */
