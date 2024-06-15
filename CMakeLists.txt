@@ -149,6 +149,7 @@ set(CMAKE_STATIC_LINKER_FLAGS "${CMAKE_STATIC_LINKER_FLAGS} ${LITECORE_STATIC_LI
 set(SQLITE3_INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/vendor/SQLiteCpp/sqlite3) # For SQLite3_UnicodeSN
 
 add_subdirectory(vendor/fleece              EXCLUDE_FROM_ALL)
+target_sources(FleeceStatic PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/dummy.cpp)
 add_subdirectory(vendor/sqlite3-unicodesn   EXCLUDE_FROM_ALL)
 
 set(ENABLE_PROGRAMS OFF CACHE INTERNAL "Build mbed TLS programs.")
