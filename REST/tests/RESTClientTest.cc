@@ -46,7 +46,7 @@ public:
 
 
 N_WAY_TEST_CASE_METHOD(RESTClientTest, "HTTPS Request to public host") {
-    c4address_fromURL("https://www.couchbase.com/"_sl, &(_sg.address), nullptr);
+    c4address_fromURL("https://api.ipify.org/"_sl, &(_sg.address), nullptr);
     _sg.remoteDBName = ""_sl;
     alloc_slice result = _sg.sendRemoteRequest("GET", "");
 }
