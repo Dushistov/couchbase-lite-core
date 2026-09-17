@@ -63,7 +63,7 @@ namespace litecore::net {
 
     ProxySpec::ProxySpec(const C4Address& addr) {
         if ( slice(addr.scheme).caseEquivalent("http"_sl) ) type = ProxyType::HTTP;
-        if ( slice(addr.scheme).caseEquivalent("https"_sl) ) type = ProxyType::HTTPS;
+        else if ( slice(addr.scheme).caseEquivalent("https"_sl) ) type = ProxyType::HTTPS;
         else
             error::_throw(error::InvalidParameter, "Unknown proxy type in URL");
         hostname = addr.hostname;

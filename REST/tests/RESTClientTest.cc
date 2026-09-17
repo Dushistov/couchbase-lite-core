@@ -30,6 +30,11 @@ class RESTClientTest : public ReplicatorAPITest {
 
     explicit RESTClientTest(int option) : ReplicatorAPITest() {
         if ( option == 0 ) {
+            const char* proxyURL = getenv("HTTP_PROXY");
+            if ( proxyURL ) {
+                _sg.proxy = make_shared<ProxySpec>(Address(slice(proxyURL)));
+                return;
+            }
             _sg.proxy = nullptr;
             fprintf(stderr, "        --- No proxy ---\n");
         } else if ( option == 1 ) {
