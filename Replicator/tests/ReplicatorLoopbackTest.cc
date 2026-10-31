@@ -20,14 +20,73 @@
 #include "PrebuiltCopier.hh"
 #include "Base64.hh"
 #include "betterassert.hh"
+#include "Defer.hh"
 #include "fleece/Mutable.hh"
 #include "fleece/PlatformCompat.hh"
 #include <chrono>
+#include <condition_variable>
+
+#ifdef DEBUG
+namespace litecore { namespace repl { namespace testing {
+    extern std::function<void(IncomingRev*)> incomingRevBeforeAfterEvent;
+    extern std::function<void(IncomingRev*)> incomingRevBeforeReset;
+} } }
+#endif
 
 using namespace litecore::actor;
 using namespace std;
 
 constexpr Timer::duration ReplicatorLoopbackTest::kLatency;
+
+#ifdef DEBUG
+TEST_CASE_METHOD(ReplicatorLoopbackTest, "IncomingRev is not reset before afterEvent", "[Pull][Race]") {
+    struct State {
+        mutex gate;
+        condition_variable changed;
+        IncomingRev* revision = nullptr;
+        bool afterEventPaused = false;
+        bool resetWhilePaused = false;
+        bool gateTimedOut = false;
+    } state;
+
+    DEFER {
+        testing::incomingRevBeforeAfterEvent = {};
+        testing::incomingRevBeforeReset = {};
+    };
+    testing::incomingRevBeforeAfterEvent = [&](IncomingRev* revision) {
+        unique_lock lock(state.gate);
+        if (state.revision) return;
+        state.revision = revision;
+        state.afterEventPaused = true;
+        state.changed.notify_all();
+        state.changed.wait_for(lock, 5s, [&] { return state.resetWhilePaused; });
+        state.afterEventPaused = false;
+    };
+    testing::incomingRevBeforeReset = [&](IncomingRev* revision) {
+        unique_lock lock(state.gate);
+        if (!state.changed.wait_for(lock, 10s, [&] { return state.revision != nullptr; })) {
+            state.gateTimedOut = true;
+            return;
+        }
+        if (revision == state.revision && state.afterEventPaused) {
+            state.resetWhilePaused = true;
+            state.changed.notify_all();
+        }
+    };
+
+    createRev(_collDB1, "doc"_sl, kRevID, kFleeceBody);
+    auto serverOptions = Replicator::Options::passive(_collSpec);
+    serverOptions.collectionOpts[0].pullFilter = [](C4CollectionSpec, FLString, FLString,
+                                                    C4RevisionFlags, FLDict, void*) { return true; };
+    _expectedDocumentCount = 1;
+    runReplicators(Replicator::Options::pushing(kC4OneShot, _collSpec), serverOptions);
+
+    lock_guard lock(state.gate);
+    REQUIRE(state.revision != nullptr);
+    REQUIRE_FALSE(state.gateTimedOut);
+    CHECK_FALSE(state.resetWhilePaused);
+}
+#endif
 
 TEST_CASE("Options password logging redaction") {
     string password("SEEKRIT");

@@ -26,12 +26,22 @@
 #include <atomic>
 #include <deque>
 #include <set>
+#ifdef DEBUG
+#include <functional>
+#endif
 
 using namespace std;
 using namespace fleece;
 using namespace litecore::blip;
 
 namespace litecore { namespace repl {
+
+#ifdef DEBUG
+    namespace testing {
+        std::function<void(IncomingRev*)> incomingRevBeforeAfterEvent;
+        std::function<void(IncomingRev*)> incomingRevBeforeReset;
+    }
+#endif
 
     // Docs with JSON bodies larger than this get parsed asynchronously (off the Puller thread)
     static constexpr size_t kMaxImmediateParseSize = 32 * 1024;
@@ -432,8 +442,12 @@ namespace litecore { namespace repl {
 
 
     // Called by the Inserter after the revision is safely committed to disk.
+    // Queue completion so it cannot overlap my previous event's afterEvent.
     void IncomingRev::revisionInserted() {
-        Retained<IncomingRev> retainSelf = this;
+        enqueue(FUNCTION_TO_QUEUE(IncomingRev::_revisionInserted));
+    }
+
+    void IncomingRev::_revisionInserted() {
         decrement(_pendingCallbacks);        
         finish();
     }
@@ -481,15 +495,34 @@ namespace litecore { namespace repl {
         _blob = _pendingBlobs.end();
         _rev->trim();
 
-        _puller->revWasHandled(this);
+        // A queued finish must not return this worker to the Puller before afterEvent.
+        if (currentActor() == this)
+            _finishedAfterEvent = true;
+        else
+            _puller->revWasHandled(this);
     }
 
 
     void IncomingRev::reset() {
+#ifdef DEBUG
+        if (testing::incomingRevBeforeReset) testing::incomingRevBeforeReset(this);
+#endif
         _rev = nullptr;
         _parent = nullptr;
         _remoteSequence = {};
         _bodySize = 0;
+        _finishedAfterEvent = false;
+    }
+
+
+    void IncomingRev::afterEvent() {
+#ifdef DEBUG
+        if (testing::incomingRevBeforeAfterEvent) testing::incomingRevBeforeAfterEvent(this);
+#endif
+        Worker::afterEvent();
+        bool expected = true;
+        if (_finishedAfterEvent.compare_exchange_strong(expected, false))
+            _puller->revWasHandled(this);
     }
 
 
